@@ -40,9 +40,12 @@
     NSDictionary *attributes = [self attributesWithConfig:config];
     NSAttributedString *contentString = [[NSAttributedString alloc] initWithString:content
                                                                         attributes:attributes];
-    
+    return [self parseAttributedContent:contentString config:config];
+}
+
++ (CoreTextData *)parseAttributedContent:(NSAttributedString *)content config:(CTFrameParserConfig*)config {
     // 创建CTFramesetterRef实例
-    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)contentString);
+    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)content);
     
     // 获得要缓制的区域的高度
     CGSize restrictSize = CGSizeMake(config.width, CGFLOAT_MAX);

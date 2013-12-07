@@ -12,6 +12,10 @@
 
 @interface CTFrameParser : NSObject
 
++ (NSDictionary *)attributesWithConfig:(CTFrameParserConfig *)config;
+
 + (CoreTextData *)parseContent:(NSString *)content config:(CTFrameParserConfig*)config;
+
++ (CoreTextData *)parseAttributedContent:(NSAttributedString *)content config:(CTFrameParserConfig*)config;
 
 @end
