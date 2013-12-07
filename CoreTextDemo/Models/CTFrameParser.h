@@ -1,5 +1,5 @@
 //
-//  CTDisplayView.h
+//  CTFrameParser.h
 //  CoreTextDemo
 //
 //  Created by TangQiao on 13-12-7.
@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "CoreTextData.h"
+#import "CTFrameParserConfig.h"
 
-@interface CTDisplayView : UIView
+@interface CTFrameParser : NSObject
 
-@property (strong, nonatomic) CoreTextData * data;
++ (CoreTextData *)parseContent:(NSString *)content config:(CTFrameParserConfig*)config;
 
 @end

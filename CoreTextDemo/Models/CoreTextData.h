@@ -1,5 +1,5 @@
 //
-//  CTDisplayView.h
+//  CoreTextData.h
 //  CoreTextDemo
 //
 //  Created by TangQiao on 13-12-7.
@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CoreTextData.h"
 
-@interface CTDisplayView : UIView
+@interface CoreTextData : NSObject
 
-@property (strong, nonatomic) CoreTextData * data;
+@property (assign, nonatomic) CTFrameRef ctFrame;
+@property (assign, nonatomic) CGFloat height;
 
 @end
