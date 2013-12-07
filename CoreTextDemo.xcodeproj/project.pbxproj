@@ -22,6 +22,7 @@
 		452F1BB0184D682B0071F13B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 452F1B8F184D682B0071F13B /* UIKit.framework */; };
 		452F1BB8184D682B0071F13B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 452F1BB6184D682B0071F13B /* InfoPlist.strings */; };
 		452F1BBA184D682B0071F13B /* CoreTextDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 452F1BB9184D682B0071F13B /* CoreTextDemoTests.m */; };
+		452F1BC81852BCA50071F13B /* CTDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 452F1BC71852BCA50071F13B /* CTDisplayView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,8 @@
 		452F1BB5184D682B0071F13B /* CoreTextDemoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CoreTextDemoTests-Info.plist"; sourceTree = "<group>"; };
 		452F1BB7184D682B0071F13B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		452F1BB9184D682B0071F13B /* CoreTextDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreTextDemoTests.m; sourceTree = "<group>"; };
+		452F1BC61852BCA50071F13B /* CTDisplayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTDisplayView.h; sourceTree = "<group>"; };
+		452F1BC71852BCA50071F13B /* CTDisplayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTDisplayView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +117,7 @@
 		452F1B91184D682B0071F13B /* CoreTextDemo */ = {
 			isa = PBXGroup;
 			children = (
+				452F1BC51852BC800071F13B /* Views */,
 				452F1B9A184D682B0071F13B /* AppDelegate.h */,
 				452F1B9B184D682B0071F13B /* AppDelegate.m */,
 				452F1B9D184D682B0071F13B /* Main_iPhone.storyboard */,
@@ -153,6 +157,15 @@
 				452F1BB6184D682B0071F13B /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		452F1BC51852BC800071F13B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				452F1BC61852BCA50071F13B /* CTDisplayView.h */,
+				452F1BC71852BCA50071F13B /* CTDisplayView.m */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -255,6 +268,7 @@
 			files = (
 				452F1BA5184D682B0071F13B /* ViewController.m in Sources */,
 				452F1B9C184D682B0071F13B /* AppDelegate.m in Sources */,
+				452F1BC81852BCA50071F13B /* CTDisplayView.m in Sources */,
 				452F1B98184D682B0071F13B /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -474,6 +488,7 @@
 				452F1BBF184D682B0071F13B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		452F1BC0184D682B0071F13B /* Build configuration list for PBXNativeTarget "CoreTextDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -482,6 +497,7 @@
 				452F1BC2184D682B0071F13B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
