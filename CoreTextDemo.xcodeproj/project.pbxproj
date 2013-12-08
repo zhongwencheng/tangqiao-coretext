@@ -28,6 +28,8 @@
 		452F1BD21852CD510071F13B /* CTFrameParserConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 452F1BD11852CD510071F13B /* CTFrameParserConfig.m */; };
 		45C4602418530CEA00F35D02 /* UIView+frameAdjust.m in Sources */ = {isa = PBXBuildFile; fileRef = 45C4602318530CEA00F35D02 /* UIView+frameAdjust.m */; };
 		45C46026185351C400F35D02 /* content.json in Resources */ = {isa = PBXBuildFile; fileRef = 45C46025185351C400F35D02 /* content.json */; };
+		45C460291854492600F35D02 /* coretext-image-1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 45C460271854492600F35D02 /* coretext-image-1.jpg */; };
+		45C4602A1854492600F35D02 /* coretext-image-2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 45C460281854492600F35D02 /* coretext-image-2.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +74,8 @@
 		45C4602218530CEA00F35D02 /* UIView+frameAdjust.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+frameAdjust.h"; sourceTree = "<group>"; };
 		45C4602318530CEA00F35D02 /* UIView+frameAdjust.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+frameAdjust.m"; sourceTree = "<group>"; };
 		45C46025185351C400F35D02 /* content.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = content.json; sourceTree = "<group>"; };
+		45C460271854492600F35D02 /* coretext-image-1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "coretext-image-1.jpg"; sourceTree = "<group>"; };
+		45C460281854492600F35D02 /* coretext-image-2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "coretext-image-2.jpg"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +152,8 @@
 		452F1B92184D682B0071F13B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				45C460271854492600F35D02 /* coretext-image-1.jpg */,
+				45C460281854492600F35D02 /* coretext-image-2.jpg */,
 				452F1B93184D682B0071F13B /* CoreTextDemo-Info.plist */,
 				452F1B94184D682B0071F13B /* InfoPlist.strings */,
 				452F1B97184D682B0071F13B /* main.m */,
@@ -276,6 +282,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				45C46026185351C400F35D02 /* content.json in Resources */,
+				45C460291854492600F35D02 /* coretext-image-1.jpg in Resources */,
+				45C4602A1854492600F35D02 /* coretext-image-2.jpg in Resources */,
 				452F1BA2184D682B0071F13B /* Main_iPad.storyboard in Resources */,
 				452F1BA7184D682B0071F13B /* Images.xcassets in Resources */,
 				452F1B9F184D682B0071F13B /* Main_iPhone.storyboard in Resources */,
