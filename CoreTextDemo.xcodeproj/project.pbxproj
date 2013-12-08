@@ -27,6 +27,7 @@
 		452F1BCF1852CD1B0071F13B /* CTFrameParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 452F1BCE1852CD1B0071F13B /* CTFrameParser.m */; };
 		452F1BD21852CD510071F13B /* CTFrameParserConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 452F1BD11852CD510071F13B /* CTFrameParserConfig.m */; };
 		45C4602418530CEA00F35D02 /* UIView+frameAdjust.m in Sources */ = {isa = PBXBuildFile; fileRef = 45C4602318530CEA00F35D02 /* UIView+frameAdjust.m */; };
+		45C46026185351C400F35D02 /* content.json in Resources */ = {isa = PBXBuildFile; fileRef = 45C46025185351C400F35D02 /* content.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		452F1BD11852CD510071F13B /* CTFrameParserConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTFrameParserConfig.m; sourceTree = "<group>"; };
 		45C4602218530CEA00F35D02 /* UIView+frameAdjust.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+frameAdjust.h"; sourceTree = "<group>"; };
 		45C4602318530CEA00F35D02 /* UIView+frameAdjust.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+frameAdjust.m"; sourceTree = "<group>"; };
+		45C46025185351C400F35D02 /* content.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = content.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +152,7 @@
 				452F1B94184D682B0071F13B /* InfoPlist.strings */,
 				452F1B97184D682B0071F13B /* main.m */,
 				452F1B99184D682B0071F13B /* CoreTextDemo-Prefix.pch */,
+				45C46025185351C400F35D02 /* content.json */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -272,6 +275,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45C46026185351C400F35D02 /* content.json in Resources */,
 				452F1BA2184D682B0071F13B /* Main_iPad.storyboard in Resources */,
 				452F1BA7184D682B0071F13B /* Images.xcassets in Resources */,
 				452F1B9F184D682B0071F13B /* Main_iPhone.storyboard in Resources */,
