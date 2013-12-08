@@ -8,8 +8,22 @@
 
 #import "CTFrameParser.h"
 #import "CTFrameParserConfig.h"
+#import "CoreTextImageData.h"
 
 @implementation CTFrameParser
+
+
+static CGFloat ascentCallback(void *ref){
+    return [(NSNumber*)[(__bridge NSDictionary*)ref objectForKey:@"height"] floatValue];
+}
+
+static CGFloat descentCallback(void *ref){
+    return 0;
+}
+
+static CGFloat widthCallback(void* ref){
+    return [(NSNumber*)[(__bridge NSDictionary*)ref objectForKey:@"width"] floatValue];
+}
 
 + (NSMutableDictionary *)attributesWithConfig:(CTFrameParserConfig *)config {
     CGFloat fontSize = config.fontSize;
@@ -37,11 +51,16 @@
 }
 
 + (CoreTextData *)parseTemplateFile:(NSString *)path config:(CTFrameParserConfig*)config {
-    NSAttributedString *content = [self loadTemplateFile:path config:config];
-    return [self parseAttributedContent:content config:config];
+    NSMutableArray *imageArray = [NSMutableArray array];
+    NSAttributedString *content = [self loadTemplateFile:path config:config imageArray:imageArray];
+    CoreTextData *data = [self parseAttributedContent:content config:config];
+    data.imageArray = imageArray;
+    return data;
 }
 
-+ (NSAttributedString *)loadTemplateFile:(NSString *)path config:(CTFrameParserConfig*)config {
++ (NSAttributedString *)loadTemplateFile:(NSString *)path
+                                  config:(CTFrameParserConfig*)config
+                              imageArray:(NSMutableArray *)imageArray {
     NSData *data = [NSData dataWithContentsOfFile:path];
     NSMutableAttributedString *result = [[NSMutableAttributedString alloc] init];
     if (data) {
@@ -55,11 +74,42 @@
                     NSAttributedString *as = [self parseAttributedContentFromNSDictionary:dict
                                                                                    config:config];
                     [result appendAttributedString:as];
+                } else if ([type isEqualToString:@"img"]) {
+                    // 创建 CoreTextImageData
+                    CoreTextImageData *imageData = [[CoreTextImageData alloc] init];
+                    imageData.name = dict[@"name"];
+                    imageData.position = [result length];
+                    [imageArray addObject:imageData];
+                    // 创建空白占位符，并且设置它的CTRunDelegate信息
+                    NSAttributedString *as = [self parseImageDataFromNSDictionary:dict config:config];
+                    [result appendAttributedString:as];
                 }
             }
         }
     }
     return result;
+}
+
++ (NSAttributedString *)parseImageDataFromNSDictionary:(NSDictionary *)dict
+                                                config:(CTFrameParserConfig*)config {
+    CTRunDelegateCallbacks callbacks;
+    memset(&callbacks, 0, sizeof(CTRunDelegateCallbacks));
+    callbacks.version = kCTRunDelegateVersion1;
+    callbacks.getAscent = ascentCallback;
+    callbacks.getDescent = descentCallback;
+    callbacks.getWidth = widthCallback;
+    CTRunDelegateRef delegate = CTRunDelegateCreate(&callbacks, (__bridge void *)(dict));
+
+    // 使用0xFFFC作为空白的占位符
+    unichar objectReplacementChar = 0xFFFC;
+    NSString * content = [NSString stringWithCharacters:&objectReplacementChar length:1];
+    NSDictionary * attributes = [self attributesWithConfig:config];
+    NSMutableAttributedString * space = [[NSMutableAttributedString alloc] initWithString:content
+                                                                               attributes:attributes];
+    CFAttributedStringSetAttribute((CFMutableAttributedStringRef)space, CFRangeMake(0, 1),
+                                   kCTRunDelegateAttributeName, delegate);
+    CFRelease(delegate);
+    return space;
 }
 
 + (NSAttributedString *)parseAttributedContentFromNSDictionary:(NSDictionary *)dict

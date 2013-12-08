@@ -30,6 +30,7 @@
 		45C46026185351C400F35D02 /* content.json in Resources */ = {isa = PBXBuildFile; fileRef = 45C46025185351C400F35D02 /* content.json */; };
 		45C460291854492600F35D02 /* coretext-image-1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 45C460271854492600F35D02 /* coretext-image-1.jpg */; };
 		45C4602A1854492600F35D02 /* coretext-image-2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 45C460281854492600F35D02 /* coretext-image-2.jpg */; };
+		45C4602D18545F9700F35D02 /* CoreTextImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 45C4602C18545F9700F35D02 /* CoreTextImageData.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,8 @@
 		45C46025185351C400F35D02 /* content.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = content.json; sourceTree = "<group>"; };
 		45C460271854492600F35D02 /* coretext-image-1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "coretext-image-1.jpg"; sourceTree = "<group>"; };
 		45C460281854492600F35D02 /* coretext-image-2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "coretext-image-2.jpg"; sourceTree = "<group>"; };
+		45C4602B18545F9700F35D02 /* CoreTextImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreTextImageData.h; sourceTree = "<group>"; };
+		45C4602C18545F9700F35D02 /* CoreTextImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreTextImageData.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +204,8 @@
 				452F1BCE1852CD1B0071F13B /* CTFrameParser.m */,
 				452F1BD01852CD510071F13B /* CTFrameParserConfig.h */,
 				452F1BD11852CD510071F13B /* CTFrameParserConfig.m */,
+				45C4602B18545F9700F35D02 /* CoreTextImageData.h */,
+				45C4602C18545F9700F35D02 /* CoreTextImageData.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -311,6 +316,7 @@
 				452F1BA5184D682B0071F13B /* ViewController.m in Sources */,
 				452F1B9C184D682B0071F13B /* AppDelegate.m in Sources */,
 				452F1BC81852BCA50071F13B /* CTDisplayView.m in Sources */,
+				45C4602D18545F9700F35D02 /* CoreTextImageData.m in Sources */,
 				452F1B98184D682B0071F13B /* main.m in Sources */,
 				452F1BD21852CD510071F13B /* CTFrameParserConfig.m in Sources */,
 				452F1BCF1852CD1B0071F13B /* CTFrameParser.m in Sources */,

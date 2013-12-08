@@ -7,10 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CoreTextImageData.h"
 
 @interface CoreTextData : NSObject
 
 @property (assign, nonatomic) CTFrameRef ctFrame;
 @property (assign, nonatomic) CGFloat height;
+@property (strong, nonatomic) NSArray * imageArray;
 
 @end

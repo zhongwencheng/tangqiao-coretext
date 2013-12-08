@@ -1,7 +1,7 @@
 [ { 
     "type" : "img",
-    "width" : 200,
-    "height" : 108,
+    "width" : 300,
+    "height" : 160,
     "name" : "coretext-image-1.jpg"
   },
   { "color" : "blue",
@@ -19,14 +19,19 @@
     "size" : 16,
     "type" : "txt"
   },
+  { "color" : "default",
+    "content" : "我在开发猿题库应用时，自己定义了一个基于UBB的排版模版。但是实现该排版文件的解析器要花费大量的篇幅，考虑到这并不是本章的重点，所以我们以一个较简单的排版文件来讲解其思想。",
+    "type" : "txt"
+  },
   { 
     "type" : "img",
-    "width" : 200,
-    "height" : 130,
+    "width" : 50,
+    "height" : 32,
     "name" : "coretext-image-2.jpg"
   },
   { "color" : "default",
-    "content" : "我在开发猿题库应用时，自己定义了一个基于UBB的排版模版，但是实现该排版文件的解析器要花费大量的篇幅，考虑到这并不是本章的重点，所以我们以一个较简单的排版文件来讲解其思想。",
+    "content" : "但是实现该排版文件的解析器要花费大量的篇幅，考虑到这并不是本章的重点，所以我们以一个较简单的排版文件来讲解其思想。",
     "type" : "txt"
   }
+
 ]
