@@ -7,8 +7,10 @@
 //
 
 #import "CTDisplayView.h"
+#import "CoreTextUtils.h"
 
 NSString *const CTDisplayViewImagePressedNotification = @"CTDisplayViewImagePressedNotification";
+NSString *const CTDisplayViewLinkPressedNotification = @"CTDisplayViewLinkPressedNotification";
 
 @interface CTDisplayView()<UIGestureRecognizerDelegate>
 
@@ -74,12 +76,22 @@ NSString *const CTDisplayViewImagePressedNotification = @"CTDisplayViewImagePres
         CGRect rect = CGRectMake(imagePosition.x, imagePosition.y, imageRect.size.width, imageRect.size.height);
         // 检测点击位置 Point 是否在rect之内
         if (CGRectContainsPoint(rect, point)) {
+            NSLog(@"hint image");
             // 在这里处理点击后的逻辑
             NSDictionary *userInfo = @{ @"imageData": imageData };
             [[NSNotificationCenter defaultCenter] postNotificationName:CTDisplayViewImagePressedNotification
                                                                 object:self userInfo:userInfo];
-            break;
+            return;
         }
+    }
+    
+    CoreTextLinkData *linkData = [CoreTextUtils touchLinkInView:self atPoint:point data:self.data];
+    if (linkData) {
+        NSLog(@"hint link!");
+        NSDictionary *userInfo = @{ @"linkData": linkData };
+        [[NSNotificationCenter defaultCenter] postNotificationName:CTDisplayViewLinkPressedNotification
+                                                            object:self userInfo:userInfo];
+        return;
     }
 }
 

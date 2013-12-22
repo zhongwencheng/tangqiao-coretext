@@ -33,6 +33,10 @@
 		45C460291854492600F35D02 /* coretext-image-1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 45C460271854492600F35D02 /* coretext-image-1.jpg */; };
 		45C4602A1854492600F35D02 /* coretext-image-2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 45C460281854492600F35D02 /* coretext-image-2.jpg */; };
 		45C4602D18545F9700F35D02 /* CoreTextImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 45C4602C18545F9700F35D02 /* CoreTextImageData.m */; };
+		45DFED2B1866BFA90068E2BE /* CoreTextLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DFED2A1866BFA90068E2BE /* CoreTextLinkData.m */; };
+		45DFED2F1866C15B0068E2BE /* CoreTextUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DFED2E1866C15B0068E2BE /* CoreTextUtils.m */; };
+		45DFED331866C5430068E2BE /* WebContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DFED311866C5430068E2BE /* WebContentViewController.m */; };
+		45DFED341866C5430068E2BE /* WebContentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45DFED321866C5430068E2BE /* WebContentViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +88,13 @@
 		45C460281854492600F35D02 /* coretext-image-2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "coretext-image-2.jpg"; sourceTree = "<group>"; };
 		45C4602B18545F9700F35D02 /* CoreTextImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreTextImageData.h; sourceTree = "<group>"; };
 		45C4602C18545F9700F35D02 /* CoreTextImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreTextImageData.m; sourceTree = "<group>"; };
+		45DFED291866BFA90068E2BE /* CoreTextLinkData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreTextLinkData.h; sourceTree = "<group>"; };
+		45DFED2A1866BFA90068E2BE /* CoreTextLinkData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreTextLinkData.m; sourceTree = "<group>"; };
+		45DFED2D1866C15B0068E2BE /* CoreTextUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreTextUtils.h; sourceTree = "<group>"; };
+		45DFED2E1866C15B0068E2BE /* CoreTextUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreTextUtils.m; sourceTree = "<group>"; };
+		45DFED301866C5430068E2BE /* WebContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebContentViewController.h; sourceTree = "<group>"; };
+		45DFED311866C5430068E2BE /* WebContentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebContentViewController.m; sourceTree = "<group>"; };
+		45DFED321866C5430068E2BE /* WebContentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WebContentViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +129,9 @@
 				45099CD51866912F00B849E6 /* ImageViewController.h */,
 				45099CD61866912F00B849E6 /* ImageViewController.m */,
 				45099CD71866912F00B849E6 /* ImageViewController.xib */,
+				45DFED301866C5430068E2BE /* WebContentViewController.h */,
+				45DFED311866C5430068E2BE /* WebContentViewController.m */,
+				45DFED321866C5430068E2BE /* WebContentViewController.xib */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -222,6 +236,10 @@
 				452F1BD11852CD510071F13B /* CTFrameParserConfig.m */,
 				45C4602B18545F9700F35D02 /* CoreTextImageData.h */,
 				45C4602C18545F9700F35D02 /* CoreTextImageData.m */,
+				45DFED291866BFA90068E2BE /* CoreTextLinkData.h */,
+				45DFED2A1866BFA90068E2BE /* CoreTextLinkData.m */,
+				45DFED2D1866C15B0068E2BE /* CoreTextUtils.h */,
+				45DFED2E1866C15B0068E2BE /* CoreTextUtils.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -302,6 +320,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45DFED341866C5430068E2BE /* WebContentViewController.xib in Resources */,
 				45C46026185351C400F35D02 /* content.json in Resources */,
 				45C460291854492600F35D02 /* coretext-image-1.jpg in Resources */,
 				45099CD91866912F00B849E6 /* ImageViewController.xib in Resources */,
@@ -329,6 +348,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				45099CD81866912F00B849E6 /* ImageViewController.m in Sources */,
+				45DFED2F1866C15B0068E2BE /* CoreTextUtils.m in Sources */,
+				45DFED2B1866BFA90068E2BE /* CoreTextLinkData.m in Sources */,
 				45099CD4186689E300B849E6 /* ViewController.m in Sources */,
 				452F1BCC1852CCF50071F13B /* CoreTextData.m in Sources */,
 				45C4602418530CEA00F35D02 /* UIView+frameAdjust.m in Sources */,
@@ -338,6 +359,7 @@
 				452F1B98184D682B0071F13B /* main.m in Sources */,
 				452F1BD21852CD510071F13B /* CTFrameParserConfig.m in Sources */,
 				452F1BCF1852CD1B0071F13B /* CTFrameParser.m in Sources */,
+				45DFED331866C5430068E2BE /* WebContentViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

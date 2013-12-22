@@ -11,6 +11,8 @@
 #import "CTFrameParser.h"
 #import "CTFrameParserConfig.h"
 #import "ImageViewController.h"
+#import "WebContentViewController.h"
+#import "CoreTextLinkData.h"
 
 @interface ViewController ()
 
@@ -40,6 +42,9 @@
 - (void)setupNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imagePressed:)
                                                  name:CTDisplayViewImagePressedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(linkPressed:)
+                                                 name:CTDisplayViewLinkPressedNotification object:nil];
+    
 }
 
 - (void)imagePressed:(NSNotification*)notification {
@@ -48,6 +53,16 @@
     
     ImageViewController *vc = [[ImageViewController alloc] init];
     vc.image = [UIImage imageNamed:imageData.name];
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
+- (void)linkPressed:(NSNotification*)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    CoreTextLinkData *linkData = userInfo[@"linkData"];
+    
+    WebContentViewController *vc = [[WebContentViewController alloc] init];
+    vc.urlTitle = linkData.title;
+    vc.url = linkData.url;
     [self presentViewController:vc animated:YES completion:nil];
 }
 @end

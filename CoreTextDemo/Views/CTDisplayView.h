@@ -10,6 +10,7 @@
 #import "CoreTextData.h"
 
 extern NSString *const CTDisplayViewImagePressedNotification;
+extern NSString *const CTDisplayViewLinkPressedNotification;
 
 @interface CTDisplayView : UIView
 

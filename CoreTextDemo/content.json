@@ -30,8 +30,16 @@
     "name" : "coretext-image-2.jpg"
   },
   { "color" : "default",
-    "content" : "但是实现该排版文件的解析器要花费大量的篇幅，考虑到这并不是本章的重点，所以我们以一个较简单的排版文件来讲解其思想。",
+    "content" : "这在这里尝试放一个参考链接：",
+    "type" : "txt"
+  },
+  { "color" : "blue",
+    "content" : "链接文字",
+    "url" : "http://blog.devtang.com",
+    "type" : "link"
+  },
+  { "color" : "default",
+    "content" : "大家可以尝试点击一下",
     "type" : "txt"
   }
-
 ]
