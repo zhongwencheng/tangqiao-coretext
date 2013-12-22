@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "CoreTextData.h"
 
+extern NSString *const CTDisplayViewImagePressedNotification;
+
 @interface CTDisplayView : UIView
 
 @property (strong, nonatomic) CoreTextData * data;

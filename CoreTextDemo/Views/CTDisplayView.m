@@ -8,7 +8,41 @@
 
 #import "CTDisplayView.h"
 
+NSString *const CTDisplayViewImagePressedNotification = @"CTDisplayViewImagePressedNotification";
+
+@interface CTDisplayView()<UIGestureRecognizerDelegate>
+
+@end
+
 @implementation CTDisplayView
+
+- (id)init {
+    return [self initWithFrame:CGRectZero];
+}
+
+- (id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setupEvents];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self setupEvents];
+    }
+    return self;
+}
+
+- (void)setupEvents {
+    UIGestureRecognizer * tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                  action:@selector(userTapGestureDetected:)];
+    tapRecognizer.delegate = self;
+    [self addGestureRecognizer:tapRecognizer];
+    self.userInteractionEnabled = YES;
+}
 
 - (void)drawRect:(CGRect)rect
 {
@@ -26,6 +60,25 @@
         UIImage *image = [UIImage imageNamed:imageData.name];
         if (image) {
             CGContextDrawImage(context, imageData.imagePosition, image.CGImage);
+        }
+    }
+}
+
+- (void)userTapGestureDetected:(UIGestureRecognizer *)recognizer {
+    CGPoint point = [recognizer locationInView:self];
+    for (CoreTextImageData * imageData in self.data.imageArray) {
+        // 翻转坐标系，因为imageData中的坐标是CoreText的坐标系
+        CGRect imageRect = imageData.imagePosition;
+        CGPoint imagePosition = imageRect.origin;
+        imagePosition.y = self.bounds.size.height - imageRect.origin.y - imageRect.size.height;
+        CGRect rect = CGRectMake(imagePosition.x, imagePosition.y, imageRect.size.width, imageRect.size.height);
+        // 检测点击位置 Point 是否在rect之内
+        if (CGRectContainsPoint(rect, point)) {
+            // 在这里处理点击后的逻辑
+            NSDictionary *userInfo = @{ @"imageData": imageData };
+            [[NSNotificationCenter defaultCenter] postNotificationName:CTDisplayViewImagePressedNotification
+                                                                object:self userInfo:userInfo];
+            break;
         }
     }
 }

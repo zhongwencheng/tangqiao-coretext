@@ -10,6 +10,7 @@
 #import "CTDisplayView.h"
 #import "CTFrameParser.h"
 #import "CTFrameParserConfig.h"
+#import "ImageViewController.h"
 
 @interface ViewController ()
 
@@ -22,7 +23,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [self setupUserInterface];
+    [self setupNotifications];
+}
+
+- (void)setupUserInterface {
     CTFrameParserConfig *config = [[CTFrameParserConfig alloc] init];
     config.width = self.ctView.width;
     NSString *path = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"json"];
@@ -32,4 +37,17 @@
     self.ctView.backgroundColor = [UIColor whiteColor];
 }
 
+- (void)setupNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imagePressed:)
+                                                 name:CTDisplayViewImagePressedNotification object:nil];
+}
+
+- (void)imagePressed:(NSNotification*)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    CoreTextImageData *imageData = userInfo[@"imageData"];
+    
+    ImageViewController *vc = [[ImageViewController alloc] init];
+    vc.image = [UIImage imageNamed:imageData.name];
+    [self presentViewController:vc animated:YES completion:nil];
+}
 @end
