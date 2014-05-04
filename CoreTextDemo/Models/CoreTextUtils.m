@@ -12,34 +12,48 @@
 
 // 检测点击位置是否在链接上
 + (CoreTextLinkData *)touchLinkInView:(UIView *)view atPoint:(CGPoint)point data:(CoreTextData *)data {
+    CFIndex idx = [self touchContentIndexInView:view atPoint:point data:data];
+    if (idx == -1) {
+        return nil;
+    }
+    CoreTextLinkData * foundLink = [self linkAtIndex:idx linkArray:data.linkArray];
+    return foundLink;
+}
+
+// 将点击的位置转换成字符串的偏移量，如果没有找到，则返回-1
++ (CFIndex)touchContentIndexInView:(UIView *)view atPoint:(CGPoint)point data:(CoreTextData *)data {
     CTFrameRef textFrame = data.ctFrame;
     CFArrayRef lines = CTFrameGetLines(textFrame);
-    if (!lines) return nil;
+    if (!lines) {
+        return -1;
+    }
     CFIndex count = CFArrayGetCount(lines);
-    CoreTextLinkData *foundLink = nil;
-    
+
+    // 获得每一行的origin坐标
     CGPoint origins[count];
     CTFrameGetLineOrigins(textFrame, CFRangeMake(0,0), origins);
-    
+
     // 翻转坐标系
     CGAffineTransform transform =  CGAffineTransformMakeTranslation(0, view.bounds.size.height);
     transform = CGAffineTransformScale(transform, 1.f, -1.f);
-    
+
+    CFIndex idx = -1;
     for (int i = 0; i < count; i++) {
         CGPoint linePoint = origins[i];
         CTLineRef line = CFArrayGetValueAtIndex(lines, i);
+        // 获得每一行的CGRect信息
         CGRect flippedRect = [self getLineBounds:line point:linePoint];
         CGRect rect = CGRectApplyAffineTransform(flippedRect, transform);
-        
+
         if (CGRectContainsPoint(rect, point)) {
+            // 将点击的坐标转换成相对于当前行的坐标
             CGPoint relativePoint = CGPointMake(point.x-CGRectGetMinX(rect),
                                                 point.y-CGRectGetMinY(rect));
-            CFIndex idx = CTLineGetStringIndexForPosition(line, relativePoint);
-            foundLink = [self linkAtIndex:idx linkArray:data.linkArray];
-            return foundLink;
+            // 获得当前点击坐标对应的字符串偏移
+            idx = CTLineGetStringIndexForPosition(line, relativePoint);
         }
     }
-    return nil;
+    return idx;
 }
 
 + (CGRect)getLineBounds:(CTLineRef)line point:(CGPoint)point {
