@@ -19,14 +19,15 @@ typedef enum CTDisplayViewState : NSInteger {
     CTDisplayViewStateSelecting     // 选中了一些文本，需要弹出复制菜单
 }CTDisplayViewState;
 
+#define ANCHOR_TARGET_TAG 1
 
 @interface CTDisplayView()<UIGestureRecognizerDelegate>
 
 @property (nonatomic) NSInteger selectionStartPosition;
 @property (nonatomic) NSInteger selectionEndPosition;
 @property (nonatomic) CTDisplayViewState state;
-@property (strong, nonatomic) UIButton *leftSelectionButton;
-@property (strong, nonatomic) UIButton *rightSelectionButton;
+@property (strong, nonatomic) UIImageView *leftSelectionAnchor;
+@property (strong, nonatomic) UIImageView *rightSelectionAnchor;
 
 @end
 
@@ -57,6 +58,19 @@ typedef enum CTDisplayViewState : NSInteger {
     self.state = CTDisplayViewStateNormal;
 }
 
+- (void)setupAnchors {
+    _leftSelectionAnchor = [self createSelectionAnchor];
+    _rightSelectionAnchor = [self createSelectionAnchor];
+    [self addSubview:_leftSelectionAnchor];
+    [self addSubview:_rightSelectionAnchor];
+}
+
+- (UIImageView *)createSelectionAnchor {
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"red.png"]];
+    imageView.frame = CGRectMake(0, 0, 5, 20);
+    return imageView;
+}
+
 - (void)setState:(CTDisplayViewState)state {
     if (_state == state) {
         return;
@@ -65,10 +79,22 @@ typedef enum CTDisplayViewState : NSInteger {
     if (_state == CTDisplayViewStateNormal) {
         _selectionStartPosition = -1;
         _selectionEndPosition = -1;
+        if (_leftSelectionAnchor) {
+            [_leftSelectionAnchor removeFromSuperview];
+            _leftSelectionAnchor = nil;
+        }
+        if (_rightSelectionAnchor) {
+            [_rightSelectionAnchor removeFromSuperview];
+            _rightSelectionAnchor = nil;
+        }
     } else if (_state == CTDisplayViewStateTouching) {
-
+        if (_leftSelectionAnchor == nil && _rightSelectionAnchor == nil) {
+            [self setupAnchors];
+        }
     } else if (_state == CTDisplayViewStateSelecting) {
-
+        if (_leftSelectionAnchor == nil && _rightSelectionAnchor == nil) {
+            [self setupAnchors];
+        }
     }
     [self setNeedsDisplay];
 }
@@ -103,6 +129,7 @@ typedef enum CTDisplayViewState : NSInteger {
 
     if (self.state == CTDisplayViewStateTouching || self.state == CTDisplayViewStateSelecting) {
         [self drawSelectionArea];
+        [self drawAnchors];
     }
 
     CTFrameDraw(self.data.ctFrame, context);
@@ -158,7 +185,7 @@ typedef enum CTDisplayViewState : NSInteger {
         CFIndex index = [CoreTextUtils touchContentOffsetInView:self atPoint:point data:self.data];
         if (index != -1 && index < self.data.content.length) {
             _selectionStartPosition = index;
-            _selectionEndPosition = index + 1;
+            _selectionEndPosition = index + 3;
         }
         self.state = CTDisplayViewStateTouching;
     } else {
@@ -171,13 +198,81 @@ typedef enum CTDisplayViewState : NSInteger {
 }
 
 - (void)userPanGuestureDetected:(UIGestureRecognizer *)recognizer {
+    if (self.state == CTDisplayViewStateNormal) {
+        return;
+    }
     CGPoint point = [recognizer locationInView:self];
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        if (_leftSelectionAnchor && CGRectContainsPoint(CGRectInset(_leftSelectionAnchor.frame, -20, -10), point)) {
+            debugLog(@"try to move left anchor");
+            _leftSelectionAnchor.tag = ANCHOR_TARGET_TAG;
+        } else if (_rightSelectionAnchor && CGRectContainsPoint(CGRectInset(_rightSelectionAnchor.frame, -20, -10), point)) {
+            debugLog(@"try to move right anchor");
+            _rightSelectionAnchor.tag = ANCHOR_TARGET_TAG;
+        }
+    } else if (recognizer.state == UIGestureRecognizerStateChanged) {
+        CFIndex index = [CoreTextUtils touchContentOffsetInView:self atPoint:point data:self.data];
+        if (index == -1) {
+            return;
+        }
+        if (_leftSelectionAnchor.tag == ANCHOR_TARGET_TAG && index < _selectionEndPosition) {
+            debugLog(@"change start position to %ld", index);
+            _selectionStartPosition = index;
+        } else if (_rightSelectionAnchor.tag == ANCHOR_TARGET_TAG && index > _selectionStartPosition) {
+            debugLog(@"change end position to %ld", index);
+            _selectionEndPosition = index;
+        }
 
-    debugMethod();
-    debugLog(@"state = %d", recognizer.state);
-    debugLog(@"point = %@", NSStringFromCGPoint(point));
+    } else if (recognizer.state == UIGestureRecognizerStateEnded ||
+               recognizer.state == UIGestureRecognizerStateCancelled) {
+        debugLog(@"end move");
+        _leftSelectionAnchor.tag = 0;
+        _rightSelectionAnchor.tag = 0;
+    }
     [self setNeedsDisplay];
+}
 
+- (void)drawAnchors {
+    if (_selectionStartPosition < 0 || _selectionEndPosition > self.data.content.length) {
+        return;
+    }
+    CTFrameRef textFrame = self.data.ctFrame;
+    CFArrayRef lines = CTFrameGetLines(self.data.ctFrame);
+    if (!lines) {
+        return;
+    }
+
+    // 翻转坐标系
+    CGAffineTransform transform =  CGAffineTransformMakeTranslation(0, self.bounds.size.height);
+    transform = CGAffineTransformScale(transform, 1.f, -1.f);
+
+    CFIndex count = CFArrayGetCount(lines);
+    // 获得每一行的origin坐标
+    CGPoint origins[count];
+    CTFrameGetLineOrigins(textFrame, CFRangeMake(0,0), origins);
+    for (int i = 0; i < count; i++) {
+        CGPoint linePoint = origins[i];
+        CTLineRef line = CFArrayGetValueAtIndex(lines, i);
+        CFRange range = CTLineGetStringRange(line);
+
+        if ([self isPosition:_selectionStartPosition inRange:range]) {
+            CGFloat ascent, descent, leading, offset;
+            offset = CTLineGetOffsetForStringIndex(line, _selectionStartPosition, NULL);
+            CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+            CGPoint origin = CGPointMake(linePoint.x + offset, linePoint.y + ascent);
+            origin = CGPointApplyAffineTransform(origin, transform);
+            _leftSelectionAnchor.origin = origin;
+        }
+        if ([self isPosition:_selectionEndPosition inRange:range]) {
+            CGFloat ascent, descent, leading, offset;
+            offset = CTLineGetOffsetForStringIndex(line, _selectionEndPosition, NULL);
+            CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+            CGPoint origin = CGPointMake(linePoint.x + offset, linePoint.y + ascent);
+            origin = CGPointApplyAffineTransform(origin, transform);
+            _rightSelectionAnchor.origin = origin;
+            break;
+        }
+    }
 }
 
 - (void)drawSelectionArea {
@@ -225,7 +320,7 @@ typedef enum CTDisplayViewState : NSInteger {
         } // 2.3 如果start在line前，end在line中，则填充end前面的区域,break
         else if (_selectionStartPosition < range.location && [self isPosition:_selectionEndPosition inRange:range]) {
             CGFloat ascent, descent, leading, width, offset;
-            offset = CTLineGetOffsetForStringIndex(line, _selectionStartPosition, NULL);
+            offset = CTLineGetOffsetForStringIndex(line, _selectionEndPosition, NULL);
             width = CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
             CGRect lineRect = CGRectMake(linePoint.x, linePoint.y - descent, offset, ascent + descent);
             [self fillSelectionAreaInRect:lineRect];
@@ -242,7 +337,6 @@ typedef enum CTDisplayViewState : NSInteger {
 }
 
 - (void)fillSelectionAreaInRect:(CGRect)rect {
-    debugLog(@"fill recct = %@", NSStringFromCGRect(rect));
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetFillColorWithColor(context, [[UIColor blueColor] CGColor]);
     CGContextFillRect(context, rect);
