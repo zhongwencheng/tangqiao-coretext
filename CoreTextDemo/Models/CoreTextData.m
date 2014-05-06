@@ -37,7 +37,7 @@
         return;
     }
     NSArray *lines = (NSArray *)CTFrameGetLines(self.ctFrame);
-    int lineCount = [lines count];
+    NSUInteger lineCount = [lines count];
     CGPoint lineOrigins[lineCount];
     CTFrameGetLineOrigins(self.ctFrame, CFRangeMake(0, 0), lineOrigins);
     

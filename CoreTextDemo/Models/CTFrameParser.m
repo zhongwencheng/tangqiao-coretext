@@ -184,6 +184,7 @@ static CGFloat widthCallback(void* ref){
     CoreTextData *data = [[CoreTextData alloc] init];
     data.ctFrame = frame;
     data.height = textHeight;
+    data.content = content;
     
     // 释放内存
     CFRelease(frame);

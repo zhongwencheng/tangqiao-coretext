@@ -12,7 +12,7 @@
 
 // 检测点击位置是否在链接上
 + (CoreTextLinkData *)touchLinkInView:(UIView *)view atPoint:(CGPoint)point data:(CoreTextData *)data {
-    CFIndex idx = [self touchContentIndexInView:view atPoint:point data:data];
+    CFIndex idx = [self touchContentOffsetInView:view atPoint:point data:data];
     if (idx == -1) {
         return nil;
     }
@@ -21,7 +21,7 @@
 }
 
 // 将点击的位置转换成字符串的偏移量，如果没有找到，则返回-1
-+ (CFIndex)touchContentIndexInView:(UIView *)view atPoint:(CGPoint)point data:(CoreTextData *)data {
++ (CFIndex)touchContentOffsetInView:(UIView *)view atPoint:(CGPoint)point data:(CoreTextData *)data {
     CTFrameRef textFrame = data.ctFrame;
     CFArrayRef lines = CTFrameGetLines(textFrame);
     if (!lines) {

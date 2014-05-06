@@ -15,5 +15,6 @@
 @property (assign, nonatomic) CGFloat height;
 @property (strong, nonatomic) NSArray * imageArray;
 @property (strong, nonatomic) NSArray * linkArray;
+@property (strong, nonatomic) NSAttributedString *content;
 
 @end
