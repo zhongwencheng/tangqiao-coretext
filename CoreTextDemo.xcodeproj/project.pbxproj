@@ -35,6 +35,7 @@
 		45C4602D18545F9700F35D02 /* CoreTextImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 45C4602C18545F9700F35D02 /* CoreTextImageData.m */; };
 		45CB423D1918E1E10080FC11 /* cursor@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45CB423C1918E1E10080FC11 /* cursor@2x.png */; };
 		45CB423F1918F0EF0080FC11 /* red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45CB423E1918F0EF0080FC11 /* red@2x.png */; };
+		45CB4243191B806B0080FC11 /* MagnifiterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 45CB4242191B806B0080FC11 /* MagnifiterView.m */; };
 		45DFED2B1866BFA90068E2BE /* CoreTextLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DFED2A1866BFA90068E2BE /* CoreTextLinkData.m */; };
 		45DFED2F1866C15B0068E2BE /* CoreTextUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DFED2E1866C15B0068E2BE /* CoreTextUtils.m */; };
 		45DFED331866C5430068E2BE /* WebContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DFED311866C5430068E2BE /* WebContentViewController.m */; };
@@ -92,6 +93,8 @@
 		45C4602C18545F9700F35D02 /* CoreTextImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreTextImageData.m; sourceTree = "<group>"; };
 		45CB423C1918E1E10080FC11 /* cursor@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cursor@2x.png"; sourceTree = "<group>"; };
 		45CB423E1918F0EF0080FC11 /* red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red@2x.png"; sourceTree = "<group>"; };
+		45CB4241191B806B0080FC11 /* MagnifiterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagnifiterView.h; sourceTree = "<group>"; };
+		45CB4242191B806B0080FC11 /* MagnifiterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagnifiterView.m; sourceTree = "<group>"; };
 		45DFED291866BFA90068E2BE /* CoreTextLinkData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreTextLinkData.h; sourceTree = "<group>"; };
 		45DFED2A1866BFA90068E2BE /* CoreTextLinkData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreTextLinkData.m; sourceTree = "<group>"; };
 		45DFED2D1866C15B0068E2BE /* CoreTextUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreTextUtils.h; sourceTree = "<group>"; };
@@ -227,6 +230,8 @@
 				45C4602318530CEA00F35D02 /* UIView+frameAdjust.m */,
 				452F1BC61852BCA50071F13B /* CTDisplayView.h */,
 				452F1BC71852BCA50071F13B /* CTDisplayView.m */,
+				45CB4241191B806B0080FC11 /* MagnifiterView.h */,
+				45CB4242191B806B0080FC11 /* MagnifiterView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -357,6 +362,7 @@
 			files = (
 				45099CD81866912F00B849E6 /* ImageViewController.m in Sources */,
 				45DFED2F1866C15B0068E2BE /* CoreTextUtils.m in Sources */,
+				45CB4243191B806B0080FC11 /* MagnifiterView.m in Sources */,
 				45DFED2B1866BFA90068E2BE /* CoreTextLinkData.m in Sources */,
 				45099CD4186689E300B849E6 /* ViewController.m in Sources */,
 				452F1BCC1852CCF50071F13B /* CoreTextData.m in Sources */,
