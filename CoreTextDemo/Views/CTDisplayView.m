@@ -8,6 +8,7 @@
 
 #import "CTDisplayView.h"
 #import "CoreTextUtils.h"
+#import "MagnifiterView.h"
 
 NSString *const CTDisplayViewImagePressedNotification = @"CTDisplayViewImagePressedNotification";
 NSString *const CTDisplayViewLinkPressedNotification = @"CTDisplayViewLinkPressedNotification";
@@ -28,6 +29,7 @@ typedef enum CTDisplayViewState : NSInteger {
 @property (nonatomic) CTDisplayViewState state;
 @property (strong, nonatomic) UIImageView *leftSelectionAnchor;
 @property (strong, nonatomic) UIImageView *rightSelectionAnchor;
+@property (strong, nonatomic) MagnifiterView *magnifierView;
 
 @end
 
@@ -65,6 +67,15 @@ typedef enum CTDisplayViewState : NSInteger {
     [self addSubview:_rightSelectionAnchor];
 }
 
+- (MagnifiterView *)magnifierView {
+    if (_magnifierView == nil) {
+        _magnifierView = [[MagnifiterView alloc] init];
+        _magnifierView.viewToMagnify = self;
+        [self addSubview:_magnifierView];
+    }
+    return _magnifierView;
+}
+
 - (UIImageView *)createSelectionAnchor {
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"red.png"]];
     imageView.frame = CGRectMake(0, 0, 5, 20);
@@ -86,6 +97,10 @@ typedef enum CTDisplayViewState : NSInteger {
         if (_rightSelectionAnchor) {
             [_rightSelectionAnchor removeFromSuperview];
             _rightSelectionAnchor = nil;
+        }
+        if (_magnifierView) {
+            [_magnifierView removeFromSuperview];
+            _magnifierView = nil;
         }
     } else if (_state == CTDisplayViewStateTouching) {
         if (_leftSelectionAnchor == nil && _rightSelectionAnchor == nil) {
@@ -187,6 +202,7 @@ typedef enum CTDisplayViewState : NSInteger {
             _selectionStartPosition = index;
             _selectionEndPosition = index + 3;
         }
+        self.magnifierView.touchPoint = point;
         self.state = CTDisplayViewStateTouching;
     } else {
         if (_selectionStartPosition >= 0 && _selectionEndPosition <= self.data.content.length) {
