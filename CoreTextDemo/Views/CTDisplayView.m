@@ -21,6 +21,7 @@ typedef enum CTDisplayViewState : NSInteger {
 }CTDisplayViewState;
 
 #define ANCHOR_TARGET_TAG 1
+#define FONT_HEIGHT  40
 
 @interface CTDisplayView()<UIGestureRecognizerDelegate>
 
@@ -61,8 +62,8 @@ typedef enum CTDisplayViewState : NSInteger {
 }
 
 - (void)setupAnchors {
-    _leftSelectionAnchor = [self createSelectionAnchor];
-    _rightSelectionAnchor = [self createSelectionAnchor];
+    _leftSelectionAnchor = [self createSelectionAnchorWithTop:YES];
+    _rightSelectionAnchor = [self createSelectionAnchorWithTop:NO];
     [self addSubview:_leftSelectionAnchor];
     [self addSubview:_rightSelectionAnchor];
 }
@@ -76,10 +77,54 @@ typedef enum CTDisplayViewState : NSInteger {
     return _magnifierView;
 }
 
-- (UIImageView *)createSelectionAnchor {
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"red.png"]];
-    imageView.frame = CGRectMake(0, 0, 5, 20);
+- (UIImage *)cursorWithFontHeight:(CGFloat)height isTop:(BOOL)top {
+    // 22
+    CGRect rect = CGRectMake(0, 0, 22, height * 2);
+    UIColor *color = RGB(28, 107, 222);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    // draw point
+    if (top) {
+        CGContextAddEllipseInRect(context, CGRectMake(0, 0, 22, 22));
+    } else {
+        CGContextAddEllipseInRect(context, CGRectMake(0, height * 2 - 22, 22, 22));
+    }
+    CGContextSetFillColorWithColor(context, color.CGColor);
+    CGContextFillPath(context);
+    // draw line
+    [color set];
+    CGContextSetLineWidth(context, 4);
+    CGContextMoveToPoint(context, 11, 22);
+    CGContextAddLineToPoint(context, 11, height * 2 - 22);
+    CGContextStrokePath(context);
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
+- (UIImageView *)createSelectionAnchorWithTop:(BOOL)isTop {
+    UIImage *image = [self cursorWithFontHeight:FONT_HEIGHT isTop:isTop];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.frame = CGRectMake(0, 0, 11, FONT_HEIGHT);
     return imageView;
+}
+
+- (void)removeSelectionAnchor {
+    if (_leftSelectionAnchor) {
+        [_leftSelectionAnchor removeFromSuperview];
+        _leftSelectionAnchor = nil;
+    }
+    if (_rightSelectionAnchor) {
+        [_rightSelectionAnchor removeFromSuperview];
+        _rightSelectionAnchor = nil;
+    }
+}
+
+- (void)removeMaginfierView {
+    if (_magnifierView) {
+        [_magnifierView removeFromSuperview];
+        _magnifierView = nil;
+    }
 }
 
 - (void)setState:(CTDisplayViewState)state {
@@ -90,18 +135,8 @@ typedef enum CTDisplayViewState : NSInteger {
     if (_state == CTDisplayViewStateNormal) {
         _selectionStartPosition = -1;
         _selectionEndPosition = -1;
-        if (_leftSelectionAnchor) {
-            [_leftSelectionAnchor removeFromSuperview];
-            _leftSelectionAnchor = nil;
-        }
-        if (_rightSelectionAnchor) {
-            [_rightSelectionAnchor removeFromSuperview];
-            _rightSelectionAnchor = nil;
-        }
-        if (_magnifierView) {
-            [_magnifierView removeFromSuperview];
-            _magnifierView = nil;
-        }
+        [self removeSelectionAnchor];
+        [self removeMaginfierView];
     } else if (_state == CTDisplayViewStateTouching) {
         if (_leftSelectionAnchor == nil && _rightSelectionAnchor == nil) {
             [self setupAnchors];
@@ -109,6 +144,9 @@ typedef enum CTDisplayViewState : NSInteger {
     } else if (_state == CTDisplayViewStateSelecting) {
         if (_leftSelectionAnchor == nil && _rightSelectionAnchor == nil) {
             [self setupAnchors];
+        }
+        if (_leftSelectionAnchor.tag != ANCHOR_TARGET_TAG && _rightSelectionAnchor.tag != ANCHOR_TARGET_TAG) {
+            [self removeMaginfierView];
         }
     }
     [self setNeedsDisplay];
@@ -234,9 +272,11 @@ typedef enum CTDisplayViewState : NSInteger {
         if (_leftSelectionAnchor.tag == ANCHOR_TARGET_TAG && index < _selectionEndPosition) {
             debugLog(@"change start position to %ld", index);
             _selectionStartPosition = index;
+            self.magnifierView.touchPoint = point;
         } else if (_rightSelectionAnchor.tag == ANCHOR_TARGET_TAG && index > _selectionStartPosition) {
             debugLog(@"change end position to %ld", index);
             _selectionEndPosition = index;
+            self.magnifierView.touchPoint = point;
         }
 
     } else if (recognizer.state == UIGestureRecognizerStateEnded ||
@@ -244,6 +284,7 @@ typedef enum CTDisplayViewState : NSInteger {
         debugLog(@"end move");
         _leftSelectionAnchor.tag = 0;
         _rightSelectionAnchor.tag = 0;
+        [self removeMaginfierView];
     }
     [self setNeedsDisplay];
 }
@@ -275,7 +316,7 @@ typedef enum CTDisplayViewState : NSInteger {
             CGFloat ascent, descent, leading, offset;
             offset = CTLineGetOffsetForStringIndex(line, _selectionStartPosition, NULL);
             CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
-            CGPoint origin = CGPointMake(linePoint.x + offset, linePoint.y + ascent);
+            CGPoint origin = CGPointMake(linePoint.x + offset - 5, linePoint.y + ascent + 11);
             origin = CGPointApplyAffineTransform(origin, transform);
             _leftSelectionAnchor.origin = origin;
         }
@@ -283,7 +324,7 @@ typedef enum CTDisplayViewState : NSInteger {
             CGFloat ascent, descent, leading, offset;
             offset = CTLineGetOffsetForStringIndex(line, _selectionEndPosition, NULL);
             CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
-            CGPoint origin = CGPointMake(linePoint.x + offset, linePoint.y + ascent);
+            CGPoint origin = CGPointMake(linePoint.x + offset - 5, linePoint.y + ascent + 11);
             origin = CGPointApplyAffineTransform(origin, transform);
             _rightSelectionAnchor.origin = origin;
             break;
@@ -353,8 +394,9 @@ typedef enum CTDisplayViewState : NSInteger {
 }
 
 - (void)fillSelectionAreaInRect:(CGRect)rect {
+    UIColor *bgColor = RGB(204, 221, 236);
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [[UIColor blueColor] CGColor]);
+    CGContextSetFillColorWithColor(context, bgColor.CGColor);
     CGContextFillRect(context, rect);
 }
 

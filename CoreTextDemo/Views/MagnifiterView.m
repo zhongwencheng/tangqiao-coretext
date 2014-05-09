@@ -14,7 +14,7 @@
 	if (self = [super initWithFrame:CGRectMake(0, 0, 80, 80)]) {
 		// make the circle-shape outline with a nice border.
 		self.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-		self.layer.borderWidth = 3;
+		self.layer.borderWidth = 1;
 		self.layer.cornerRadius = 40;
 		self.layer.masksToBounds = YES;
 	}
