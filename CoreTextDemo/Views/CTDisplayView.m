@@ -137,6 +137,7 @@ typedef enum CTDisplayViewState : NSInteger {
         _selectionEndPosition = -1;
         [self removeSelectionAnchor];
         [self removeMaginfierView];
+        [self hideMenuController];
     } else if (_state == CTDisplayViewStateTouching) {
         if (_leftSelectionAnchor == nil && _rightSelectionAnchor == nil) {
             [self setupAnchors];
@@ -147,9 +148,31 @@ typedef enum CTDisplayViewState : NSInteger {
         }
         if (_leftSelectionAnchor.tag != ANCHOR_TARGET_TAG && _rightSelectionAnchor.tag != ANCHOR_TARGET_TAG) {
             [self removeMaginfierView];
+            [self hideMenuController];
         }
     }
     [self setNeedsDisplay];
+}
+
+- (void)showMenuController {
+    if ([self becomeFirstResponder]) {
+        CGRect selectionRect = [self rectForMenuController];
+        // 翻转坐标系
+        CGAffineTransform transform =  CGAffineTransformMakeTranslation(0, self.bounds.size.height);
+        transform = CGAffineTransformScale(transform, 1.f, -1.f);
+        selectionRect = CGRectApplyAffineTransform(selectionRect, transform);
+
+        UIMenuController *theMenu = [UIMenuController sharedMenuController];
+        [theMenu setTargetRect:selectionRect inView:self];
+        [theMenu setMenuVisible:YES animated:YES];
+    }
+}
+
+- (void)hideMenuController {
+    if ([self resignFirstResponder]) {
+        UIMenuController *theMenu = [UIMenuController sharedMenuController];
+        [theMenu setMenuVisible:NO animated:YES];
+    }
 }
 
 - (void)setupEvents {
@@ -238,17 +261,26 @@ typedef enum CTDisplayViewState : NSInteger {
         CFIndex index = [CoreTextUtils touchContentOffsetInView:self atPoint:point data:self.data];
         if (index != -1 && index < self.data.content.length) {
             _selectionStartPosition = index;
-            _selectionEndPosition = index + 3;
+            _selectionEndPosition = index + 2;
         }
         self.magnifierView.touchPoint = point;
         self.state = CTDisplayViewStateTouching;
     } else {
         if (_selectionStartPosition >= 0 && _selectionEndPosition <= self.data.content.length) {
             self.state = CTDisplayViewStateSelecting;
+            [self showMenuController];
         } else {
             self.state = CTDisplayViewStateNormal;
         }
     }
+}
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+    debugMethod();
+    if (action == @selector(cut:) || action == @selector(copy:) || action == @selector(paste:) || action == @selector(selectAll:)) {
+        return YES;
+    }
+    return NO;
 }
 
 - (void)userPanGuestureDetected:(UIGestureRecognizer *)recognizer {
@@ -257,12 +289,14 @@ typedef enum CTDisplayViewState : NSInteger {
     }
     CGPoint point = [recognizer locationInView:self];
     if (recognizer.state == UIGestureRecognizerStateBegan) {
-        if (_leftSelectionAnchor && CGRectContainsPoint(CGRectInset(_leftSelectionAnchor.frame, -20, -10), point)) {
+        if (_leftSelectionAnchor && CGRectContainsPoint(CGRectInset(_leftSelectionAnchor.frame, -25, -6), point)) {
             debugLog(@"try to move left anchor");
             _leftSelectionAnchor.tag = ANCHOR_TARGET_TAG;
-        } else if (_rightSelectionAnchor && CGRectContainsPoint(CGRectInset(_rightSelectionAnchor.frame, -20, -10), point)) {
+            [self hideMenuController];
+        } else if (_rightSelectionAnchor && CGRectContainsPoint(CGRectInset(_rightSelectionAnchor.frame, -25, -6), point)) {
             debugLog(@"try to move right anchor");
             _rightSelectionAnchor.tag = ANCHOR_TARGET_TAG;
+            [self hideMenuController];
         }
     } else if (recognizer.state == UIGestureRecognizerStateChanged) {
         CFIndex index = [CoreTextUtils touchContentOffsetInView:self atPoint:point data:self.data];
@@ -273,10 +307,12 @@ typedef enum CTDisplayViewState : NSInteger {
             debugLog(@"change start position to %ld", index);
             _selectionStartPosition = index;
             self.magnifierView.touchPoint = point;
+            [self hideMenuController];
         } else if (_rightSelectionAnchor.tag == ANCHOR_TARGET_TAG && index > _selectionStartPosition) {
             debugLog(@"change end position to %ld", index);
             _selectionEndPosition = index;
             self.magnifierView.touchPoint = point;
+            [self hideMenuController];
         }
 
     } else if (recognizer.state == UIGestureRecognizerStateEnded ||
@@ -285,6 +321,7 @@ typedef enum CTDisplayViewState : NSInteger {
         _leftSelectionAnchor.tag = 0;
         _rightSelectionAnchor.tag = 0;
         [self removeMaginfierView];
+        [self showMenuController];
     }
     [self setNeedsDisplay];
 }
@@ -385,6 +422,57 @@ typedef enum CTDisplayViewState : NSInteger {
     }
 }
 
+- (CGRect)rectForMenuController {
+    if (_selectionStartPosition < 0 || _selectionEndPosition > self.data.content.length) {
+        return CGRectZero;
+    }
+    CTFrameRef textFrame = self.data.ctFrame;
+    CFArrayRef lines = CTFrameGetLines(self.data.ctFrame);
+    if (!lines) {
+        return CGRectZero;
+    }
+    CFIndex count = CFArrayGetCount(lines);
+    // 获得每一行的origin坐标
+    CGPoint origins[count];
+    CTFrameGetLineOrigins(textFrame, CFRangeMake(0,0), origins);
+
+    CGRect resultRect = CGRectZero;
+    for (int i = 0; i < count; i++) {
+        CGPoint linePoint = origins[i];
+        CTLineRef line = CFArrayGetValueAtIndex(lines, i);
+        CFRange range = CTLineGetStringRange(line);
+        // 1. start和end在一个line,则直接弄完break
+        if ([self isPosition:_selectionStartPosition inRange:range] && [self isPosition:_selectionEndPosition inRange:range]) {
+            CGFloat ascent, descent, leading, offset, offset2;
+            offset = CTLineGetOffsetForStringIndex(line, _selectionStartPosition, NULL);
+            offset2 = CTLineGetOffsetForStringIndex(line, _selectionEndPosition, NULL);
+            CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+            CGRect lineRect = CGRectMake(linePoint.x + offset, linePoint.y - descent, offset2 - offset, ascent + descent);
+            resultRect = lineRect;
+            break;
+        }
+    }
+    if (!CGRectIsEmpty(resultRect)) {
+        return resultRect;
+    }
+
+    // 2. start和end不在一个line
+    for (int i = 0; i < count; i++) {
+        CGPoint linePoint = origins[i];
+        CTLineRef line = CFArrayGetValueAtIndex(lines, i);
+        CFRange range = CTLineGetStringRange(line);
+        // 如果start在line中，则记录当前为起始行
+        if ([self isPosition:_selectionStartPosition inRange:range]) {
+            CGFloat ascent, descent, leading, width, offset;
+            offset = CTLineGetOffsetForStringIndex(line, _selectionStartPosition, NULL);
+            width = CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+            CGRect lineRect = CGRectMake(linePoint.x + offset, linePoint.y - descent, width - offset, ascent + descent);
+            resultRect = lineRect;
+        }
+    }
+    return resultRect;
+}
+
 - (BOOL)isPosition:(NSInteger)position inRange:(CFRange)range {
     if (position >= range.location && position < range.location + range.length) {
         return YES;
@@ -398,6 +486,10 @@ typedef enum CTDisplayViewState : NSInteger {
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetFillColorWithColor(context, bgColor.CGColor);
     CGContextFillRect(context, rect);
+}
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
 }
 
 @end

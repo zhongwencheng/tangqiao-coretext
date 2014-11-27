@@ -47,6 +47,10 @@
     
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+}
+
 - (void)imagePressed:(NSNotification*)notification {
     NSDictionary *userInfo = [notification userInfo];
     CoreTextImageData *imageData = userInfo[@"imageData"];
